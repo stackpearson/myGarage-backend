@@ -1,7 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const errorHandler = require('../api/errorhandler.js')
+const errorHandler = require('../api/errorHandler.js')
 const session = require('express-session');
 const knexSessionStore = require('connect-session-knex')(session);
 
