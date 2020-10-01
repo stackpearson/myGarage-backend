@@ -9,6 +9,14 @@ const usersRouter = require('../users/users-router.js');
 const authRouter = require('../auth/auth-router.js');
 const server = express();
 
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
 const sessionConfig = {
     name: 'spcookie',
     secret: 'shh, this is a secret string',
@@ -40,6 +48,19 @@ server.use('/api/', authRouter);
 server.get('/', (req, res) => {
     res.json({ message: 'api is up and running'});
 })
+
+.get('/db', async (req, res) => {
+    try {
+      const client = await pool.connect();
+      const result = await client.query('SELECT * FROM test_table');
+      const results = { 'results': (result) ? result.rows : null};
+      res.render('pages/db', results );
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 
 
 server.use(errorHandler);
