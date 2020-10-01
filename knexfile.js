@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const pgConnection = process.env.DATABASE_URL || "postgresql://postgres@localhost/auth";
+const pgConnection = process.env.DATABASE_URL;
 // if using a local postgres server, please create the database manually, Knex will not create it autmatically
 
 module.exports = {
@@ -31,10 +31,8 @@ module.exports = {
       max: 10,
     },
     migrations: {
+      tablename: 'knex_migrations',
       directory: "./database/migrations",
-    },
-    seeds: {
-      directory: "./database/seeds",
     },
   },
 };
