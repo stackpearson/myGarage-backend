@@ -7,7 +7,37 @@ function findVehicles(id) {
         .where('u.user_id', '=', `${id}`)
 }
 
+function findById(id) {
+    return db('vehicles').where({ id }).first()
+}
+
+function findRelationById(id) {
+    return db('user_vehicles').where({ id }).first();
+}
+
+async function addVehicles(vehicle) {
+    try {
+        const [id] = await db('vehicles').insert(vehicle, 'id');
+        return findById(id);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function addVehicleRelation(vehicleRelation) {
+    try {
+        const [id] = await db('user_vehicles').insert(vehicleRelation, 'id')
+        return findRelationById(id);
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 module.exports = {
-    findVehicles
+    findVehicles,
+    findById,
+    addVehicles,
+    addVehicleRelation,
+    findRelationById
 }

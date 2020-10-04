@@ -45,7 +45,6 @@ exports.up = function(knex) {
             .references('vehicles.id');
         tbl.integer('service_id')
             .unsigned()
-            .notNullable()
             .references('user_services.id');
       })
   };
