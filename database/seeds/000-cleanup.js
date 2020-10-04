@@ -5,7 +5,7 @@ function cleanTables(knex) {
     .clean(knex, {
       mode: "truncate",
       restartIdentity: true, // ask PosrgreSQL to reset the Primary Keys back to 0
-      ignoreTables: ["knex_migrations", "knex_migrations_lock"],
+      ignoreTables: ["knex_migrations", "knex_migrations_lock", 'users'],
     })
     .then(() => console.log("\n== All tables truncated, ready to seed ==\n"));
 }

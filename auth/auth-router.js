@@ -1,58 +1,68 @@
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const router = require('express').Router();
-const users = require('../users/users-model.js');
-const bcrypt = require('bcryptjs');
 
+const Users = require('../users/users-model.js');
 
+router.get('/', (req, res) => {
+    res.json({authRouter: 'up'});
+})
 
-// api/auth/register
 router.post('/register', async (req, res, next) => {
-    let user = req.body;
-    let hash = bcrypt.hashSync(user.password, 10);
+    const rounds = process.env.BCRYPT_ROUNDS || 8;
 
-    user.password = hash;
+    const creds = req.body
+    const hash = bcryptjs.hashSync(creds.password, rounds);
+    creds.password = hash;
 
     try {
-        const saved = await users.add(user);
-        res.status(201).json(saved);
-    } catch (err) {
-        next({apiCode:500, apiMessage:'error registering', ...err})
-        //this is basically saying res.status(500).json({message: 'server error}) we're just handling it through our errorHandler
-    }
+        const saved = await Users.add(creds)
+        const token = generateToken(saved)
+        res.status(200).json({user: saved, token: token});
 
+        
+    } catch (err) {
+        next({apiCode:500, apiMessage:'error registering', err})
+    }
 })
 
 router.post('/login', async (req, res, next) => {
     let {username, password} = req.body;
 
-    const [user] = await users.findBy({username});
+    const [user] = await Users.findBy({username});
+    console.log(user)
 
     try {
-        if (user && bcrypt.compareSync(password, user.password)) {
-            req.session.user = user; //if logged in, create a session object
-            res.status(200).json({message: `You're logged in under the username ${user.username}`})
+        if (user && bcryptjs.compareSync(password, user.password)) {
+            const token = generateToken(user)
+            res.status(200).json({message: `welcome to the API ${user.username},`, token: token})
         } else {
-            next({apiCode:401, apiMessage:'You shall not pass'})
+            next({apiCode: 401, apiMessage: 'You shall not pass'})
         }
-        //essentially is the user exists, bcrypt will add the salt to the password guess, hash it, and then compare the results to the user.password we have stored already
-    } catch (err) {
-        next({apiCode:500, apiMessage:'error logging in', ...err})
+    } catch(err) {
+        next({apiCode: 500, apiMessage: 'error logging in', ...err})
     }
 })
 
-router.get('/logout', (req, res, next) => {
-    if (req.session) {
-        req.session.destroy(err => {
-            if (err) {
-                next({apiCode:400, apiMessage:'error logging out', ...err});
-            } else {
-                res.send('goodbye')
-            }
-        });
-    } else {
-        res.send('already logged out');
-    }
-});
 
+
+function generateToken(user) {
+    const payload = {
+        subject: user.id,
+        username: user.username,
+        department: user.department
+    };
+
+    const secret = process.env.JWT_SECRET || 'secret stringy thingy';
+    const options = {
+        expiresIn: '1d'
+    };
+
+    const token = jwt.sign(payload, secret, options);
+
+    return token;
+}
 
 
 module.exports = router;
