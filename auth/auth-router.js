@@ -36,7 +36,7 @@ router.post('/login', async (req, res, next) => {
     try {
         if (user && bcryptjs.compareSync(password, user.password)) {
             const token = generateToken(user)
-            res.status(200).json({message: `welcome to the API ${user.username},`, token: token})
+            res.status(200).json({id: user.id, username: user.username, token: token})
         } else {
             next({apiCode: 401, apiMessage: 'You shall not pass'})
         }
