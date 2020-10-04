@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const Vehicles = require('./vehicles-model.js');
-const Services = require('../services/services-model.js');
 const restricted = require('../utils/restricted-endpoint.js');
 
 //   -api/vehicles- //
@@ -16,6 +15,8 @@ router.get('/:id', restricted, (req, res) => {
         .catch(err => res.send(err))
 })
 
+//adds a vehicle for the linked user and relates the vehicle to their user id
+//returns the vehicle details and the vehicleRelationId
 router.post('/:id', restricted, async (req, res) => {
     let vehicle = req.body;
 
@@ -32,13 +33,13 @@ router.post('/:id', restricted, async (req, res) => {
     console.log(saved2)
 
     try {
-        if (saved) {
+        if (saved2) {
             res.status(201).json({vehicleAdded: saved, vehicleRelationId: saved2.id})
         } else {
-            res.status(500).json({message: 'server error, vehicle not added'})
+            res.status(500).json({message: 'server error from vehicles router, vehicle not added'})
         }
         
-    } catch (error) {
+    } catch (err) {
        next({apiCode:500, apiMessage:'server error', ...err}) 
     }
     

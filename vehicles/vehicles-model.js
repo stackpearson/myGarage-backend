@@ -29,6 +29,7 @@ async function addVehicleRelation(vehicleRelation) {
         const [id] = await db('user_vehicles').insert(vehicleRelation, 'id')
         return findRelationById(id);
     } catch (error) {
+        
         throw error;
     }
 }
