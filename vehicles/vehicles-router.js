@@ -5,7 +5,7 @@ const restricted = require('../utils/restricted-endpoint.js');
 router.get('/:id', restricted, (req, res) => {
     const { id } = req.params;
 
-    Vehicles.find(id)
+    Vehicles.findVehicles(id)
         .then(vehicles => {
             res.status(200).json(vehicles)
         })
