@@ -44,5 +44,6 @@ module.exports = {
     findServices,
     addServices,
     findServiceById,
-    addServiceRelation
+    addServiceRelation,
+    findRelationById
 }
