@@ -56,3 +56,13 @@ body:
     ]
 
 returns a service added object that was passed in with the request. Automatically associates the service to the specified vehicle.
+
+
+# deployment instructions
+
+ensure all environment objects are configured on heroku
+add the heroku-postgresql add on (if not done already)
+git push heroku master
+heroku config | grep HEROKU_POSTGRESQL
+heroku run knex migrate:rollback
+heroku run knex migrate:latest
