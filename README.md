@@ -66,3 +66,4 @@ git push heroku master
 heroku config | grep HEROKU_POSTGRESQL
 heroku run knex migrate:rollback
 heroku run knex migrate:latest
+

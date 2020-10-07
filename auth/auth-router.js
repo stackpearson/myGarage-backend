@@ -19,7 +19,7 @@ router.post('/register', async (req, res, next) => {
     try {
         const saved = await Users.add(creds)
         const token = generateToken(saved)
-        res.status(200).json({user: saved, token: token});
+        res.status(200).json({id: saved.id, username: saved.username, token: token});
 
         
     } catch (err) {
@@ -36,7 +36,7 @@ router.post('/login', async (req, res, next) => {
     try {
         if (user && bcryptjs.compareSync(password, user.password)) {
             const token = generateToken(user)
-            res.status(200).json({id: user.id, username: user.username,})
+            res.status(200).json({id: user.id, username: user.username, token: token})
         } else {
             next({apiCode: 401, apiMessage: 'You shall not pass'})
         }
