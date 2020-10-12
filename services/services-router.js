@@ -34,23 +34,29 @@ router.get('/:id', restricted, (req, res) => {
 
 //the params portion 
 router.post('/', restricted, async (req, res) => {
-    const service = req.body[0];
-    const vehicle_id = req.body[1].vehicle_id
+    let service = req.body[0];
+    let vehicle_id = req.body[1].vehicle_id;
+    let user_id = req.body[2].user_id;
 
     const savedService = await Services.addServices(service)
 
     const serviceRelation = {
-        service_id: savedService.id,
-        vehicle_id: vehicle_id
+        user_id: user_id,
+        vehicle_id: vehicle_id,
+        service_id: savedService.id
     }
 
+    console.log(serviceRelation)
+
     const savedRelation = await Services.addServiceRelation(serviceRelation)
+    console.log(savedRelation)
     
     try {
-        if (savedService) {
+        if (savedRelation) {
             res.status(201).json({serviceAdded: savedService, savedRelation: savedRelation })
         } else {
             res.status(500).json({message: 'server error from services router, vehicle not added'})
+            console.log(error)
         }
         
         

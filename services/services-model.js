@@ -28,9 +28,10 @@ async function addServices(service) {
 
 async function addServiceRelation(serviceRelation) {
    try {
-    const service =  await db('user_vehicles').where('user_vehicles.vehicle_id', '=', `${serviceRelation.vehicle_id}`).update({service_id: `${serviceRelation.service_id}`})
-
-    console.log(service)
+    // const service =  await db('user_vehicles').where('user_vehicles.vehicle_id', '=', `${serviceRelation.vehicle_id}`).update({service_id: `${serviceRelation.service_id}`})
+    const [id] = await db('user_vehicles').insert(serviceRelation, 'id')
+    return findRelationById(id)
+    // console.log(service)
    } catch (error) {
        throw error;
    } 
