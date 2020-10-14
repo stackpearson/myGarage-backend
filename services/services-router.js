@@ -34,9 +34,9 @@ router.get('/:id', restricted, (req, res) => {
 
 //the params portion 
 router.post('/', restricted, async (req, res) => {
-    let service = req.body[0];
-    let vehicle_id = req.body[1].vehicle_id;
-    let user_id = req.body[2].user_id;
+    let service = req.body.serviceData[0];
+    let vehicle_id = req.body.serviceData[1].vehicle_id;
+    let user_id = req.body.serviceData[2].user_id;
 
     const savedService = await Services.addServices(service)
 
