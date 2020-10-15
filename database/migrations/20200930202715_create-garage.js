@@ -12,6 +12,7 @@ exports.up = function(knex) {
       
       .createTable('user_services', tbl => {
         tbl.increments();
+        tbl.integer('vehicle_id')
         tbl.string('service_name', 128)
             .notNullable();
         tbl.string('service_date', 128);

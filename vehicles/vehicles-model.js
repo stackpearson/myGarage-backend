@@ -34,11 +34,41 @@ async function addVehicleRelation(vehicleRelation) {
     }
 }
 
+async function removeVehicle(id) {
+    try {
+        await removeServices(id)
+        await removeServiceRelations(id)
+        return db('vehicles')
+            .where('id', '=', `${id}`)
+            .del();
+    } catch(error) {
+        throw error;
+    }
+
+}
+
+function removeServices(id) {
+    return db('user_vehicles')
+        .where('vehicle_id', '=', `${id}`)
+        .del();
+}
+
+function removeServiceRelations(id) {
+    return db('user_services')
+        .where('vehicle_id', '=', `${id}`)
+        .del();
+}
+
+
+
 
 module.exports = {
     findVehicles,
     findById,
     addVehicles,
     addVehicleRelation,
-    findRelationById
+    findRelationById,
+    removeVehicle,
+    removeServices,
+    removeServiceRelations
 }
