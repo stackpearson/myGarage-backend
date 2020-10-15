@@ -16,23 +16,6 @@ router.get('/:id', restricted, (req, res) => {
 })
 
 
-//takes an array of objects, 1st object is the service details, next is vehicle id:
-//    [
-//         {
-//         "service_name": "string, not nullable",
-//         "service_date": "string, nullable",
-//         "service_mileage": "integer, not nullable",
-//         "next_service_date": "string, nullable",
-//         "next_service_mileage": "integer, not nullable",
-//         "service_notes": "notes, nullable"
-//     },
-
-//     {
-//         "vehicle_id": 'integer, provided automatically from front end'
-//     }
-// ]
-
-//the params portion 
 router.post('/', restricted, async (req, res) => {
     let serviceName = req.body.service_name;
     let serviceDate = req.body.service_date;
@@ -49,12 +32,8 @@ router.post('/', restricted, async (req, res) => {
         'next_service_mileage': nextServiceMileage,
         'service_notes': serviceNotes
     }
-
-
     let vehicle_id = req.body.vehicle_id;
     let user_id = req.body.user_id;
-
-    console.log('serviceDetails', serviceDetails)
 
     const savedService = await Services.addServices(serviceDetails)
     
@@ -64,10 +43,7 @@ router.post('/', restricted, async (req, res) => {
         service_id: savedService.id
     }
 
-    console.log(serviceRelation)
-
     const savedRelation = await Services.addServiceRelation(serviceRelation)
-    console.log(savedRelation)
     
     try {
         if (savedRelation) {
@@ -82,6 +58,19 @@ router.post('/', restricted, async (req, res) => {
     } catch (err) {
         next({apiCode:500, apiMessage:'error adding service from service router', ...err})
     }
+})
+
+router.delete('/:id', (req, res) => {
+    let id = req.params.id;
+    Services.removeService(id)
+        .then((del) => {
+            res.status(200).json({message: 'service deleted'})
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({message: 'server error', ...err})
+        })
+
 })
 
 

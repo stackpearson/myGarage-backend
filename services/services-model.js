@@ -37,6 +37,24 @@ async function addServiceRelation(serviceRelation) {
    } 
 }
 
+async function removeService(id) {
+    try {
+        await removeServiceRelation(id)
+        return db('user_services')
+            .where({ id })
+            .del();
+    } catch (error) {
+       throw error; 
+    }
+
+}
+
+function removeServiceRelation(id) {
+    return db('user_vehicles')
+        .where('service_id', '=', `${id}`)
+        .del();
+}
+
 
 
 
@@ -46,5 +64,7 @@ module.exports = {
     addServices,
     findServiceById,
     addServiceRelation,
-    findRelationById
+    findRelationById,
+    removeService,
+    removeServiceRelation
 }

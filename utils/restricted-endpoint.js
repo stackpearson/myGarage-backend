@@ -8,8 +8,6 @@ module.exports = (req, res, next) => {
     req.headers.authorization.split(' ')[1] : 
     '';
 
-    console.log('token', token)
-
     if (token) {
         jwt.verify(token, secret, (err, decodedToken) => {
             if (err) {
